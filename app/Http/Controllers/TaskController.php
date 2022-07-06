@@ -86,4 +86,46 @@ class TaskController extends BaseController
    
         return $this->sendResponse($success, 'Successfully Delete an task.');
     }
+
+    public function updateStatusTask(Request $request)
+    {
+        //dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'id_task' => 'required|exists:tasks,id',
+            'status' => 'required',
+            'user_create' => 'required',
+        ]);
+   
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+
+        $checkUser=User::where('username',$request->user_create)->first();
+        $user_create=$checkUser->role;
+
+        if($user_create == "MEMBER"){
+            $checkTask=Task::where('id',$request->id_task)->first();
+            $user_id=$checkTask->user_id;
+            $checkUsername=User::where('id',$user_id)->first();
+            $username=$checkUsername->username;
+
+            //dd($username,$request->user_create);
+            if($username == $request->user_create){
+                $updateTask=Task::where('id',$request->id_task)->update([
+                    'status' => $request->status,
+                ]);
+    
+                $success['id'] =  $request->id_task;
+                $success['status'] =  $request->status;
+    
+                return $this->sendResponse($success, 'Successfully Update task status.');
+            }
+            else{
+                return $this->sendError('Validation Error.',"You do not have access to this task");
+            }
+        }
+        else{
+            return $this->sendError('Validation Error.',"You are not MEMBER");
+        }
+    }
 }
