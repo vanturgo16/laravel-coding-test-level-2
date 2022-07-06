@@ -60,7 +60,8 @@ class ProjectController extends BaseController
     {
         $count=Project::count();
         if($count>0){
-            $projects=Project::get();
+            $projects=Project::orderBY('name','asc')
+            ->paginate(3);
             return $this->sendResponse($projects, 'Successfully Parse Project Data.');
         }
         else{
