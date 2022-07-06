@@ -23,7 +23,7 @@ Route::post('/v1/register-admin', [AuthController::class, 'registerAdmin']);
 
 //USER
 Route::get('/v1/users', [UserController::class, 'getAllUser']);
-Route::post('/v1/users', [UserController::class, 'addUser']);
+Route::post('/v1/users', [UserController::class, 'addUser'])->name('addUser');
 Route::get('/v1/users/{id}', [UserController::class, 'getUser']);
 Route::put('/v1/users/{id}', [UserController::class, 'putUser']);
 Route::patch('/v1/users/{id}', [UserController::class, 'patchUser']);
